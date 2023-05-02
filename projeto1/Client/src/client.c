@@ -20,7 +20,7 @@ int main(){
             int c;
             while ((c = getchar()) != '\n' && c != EOF); 
 
-            /* Directs to the right function if it needs to take an extra argument */
+            // Get the parameter to each command
             char parameter[MAX_PROFILE_INFO] = {'\0'};
             switch (command){
                 case '1':
@@ -41,19 +41,19 @@ int main(){
                 case '5':
                     break;
                 case '6':
-                    printf("Email do perfil que deseja consultar: ");
+                    printf("Email para a consulta: ");
                     get_parameter(parameter);
                     break;
                 case '7':
-                    printf("Email do perfil que deseja remover: ");
+                    printf("Email para remover: ");
                     get_parameter(parameter);
                     break;
                 case '8':
-                    printf("Programa terminado.\n");
+                    printf("Tchau.\n");
                     return 0;
                     break;
                 default:
-                    printf("Comando inválido, tente novamente.\n");
+                    printf("Comando inválido.\n");
                     continue;
             }
             send_request(command, parameter, IP, PORT);
@@ -92,6 +92,7 @@ void get_profile_info(char* args) {
     strcat(args,temp);
 }
 
+// Receive the server response back 
 void receive_message(int socket) {
     char buffer[BUFFER_LEN];
 
@@ -108,6 +109,7 @@ void receive_message(int socket) {
     return;
 }
 
+// Connect to server and send the message
 void send_request(char cmd, char* arg, char* ip, int port){
 	char msg[BUFFER_LEN] = {'\0'};
 

@@ -1,19 +1,6 @@
-#include <stdio.h> 
-#include <netdb.h> 
-#include <netinet/in.h> 
-#include <stdlib.h> 
-#include <string.h> 
-#include <sys/socket.h> 
-#include <sys/types.h> 
-#include <arpa/inet.h>
-#include <unistd.h>
-#include "database.h"
+#include "server.h"
 
-#define MAX 4000 // Size of buffer
-#define PORT 8080
-#define LISTENMAX 5 
-#define SA struct sockaddr
-
+// Send the response back to the client
 void send_response(int connfd, ListProfile *profile_list) {
 	char response[MAX] = {};
 
@@ -21,7 +8,7 @@ void send_response(int connfd, ListProfile *profile_list) {
 
 	if (profile_list->count == 0 || profile_list == NULL){
 		sprintf(temp, "No profile found.\n%c",0x04);
-		send(connfd,temp,19,0);
+		send(connfd,temp,22,0);
 		return;
 	}
 
@@ -30,7 +17,6 @@ void send_response(int connfd, ListProfile *profile_list) {
 		strcat(response,temp);
 		sprintf(temp, "FirstName: %s LastName: %s\n",profile_list->list[i].first_name,profile_list->list[i].last_name);
 		strcat(response,temp);
-
         if (profile_list->list[i].city[0] != '\0'){
             sprintf(temp, "City: %s\n", profile_list->list[i].city);
             strcat(response,temp);
@@ -64,6 +50,7 @@ void send_response(int connfd, ListProfile *profile_list) {
 	free(profile_list);
 }
 
+// Parse the client message of add profile
 Profile get_profile_info(char *profile_info) {
 	Profile profile;
 	printf("%s\n",profile_info);
@@ -144,6 +131,7 @@ void router(int connfd, sqlite3* database) {
 	case '7':
 		memcpy(&parameter, &buffer[1], MAX_PROFILE_INFO);
 		parameter[MAX_PROFILE_INFO-1] = '\0';
+		printf("%s",parameter);
 		if (remove_by_email(database, parameter)){
 			sprintf(temp, "Profile removed sucessuly.\n%c",0x04);
 			send(connfd,temp,sizeof(temp),0);
@@ -161,6 +149,7 @@ void router(int connfd, sqlite3* database) {
 
 int main() { 
 	
+	// Create the database and store the connection
 	sqlite3 *database = init_database("src/database.db");	
 	
     int sockedfd, connfd, len_cli; 

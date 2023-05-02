@@ -53,10 +53,7 @@ int add_profile(sqlite3 *database, Profile profile) {
         return 0;
     }
 
-    if (sqlite3_step(stmt) != SQLITE_OK) {
-        printf("Error: %s\n", sqlite3_errmsg(database));
-        return 0;
-    }
+    sqlite3_step(stmt);
 
     sqlite3_finalize(stmt);
     return 1;
@@ -226,7 +223,7 @@ ListProfile *find_by_email(sqlite3 *database, char *email) {
 }
 
 int remove_by_email(sqlite3 *database, char *email){
-    char *sql = "DELETE FROM Profile WHERE email = '?';";
+    char *sql = "DELETE FROM Profile WHERE email = ?;";
 
     sqlite3_stmt *stmt;
 
@@ -238,12 +235,8 @@ int remove_by_email(sqlite3 *database, char *email){
         printf("Error: %s\n", sqlite3_errmsg(database));
         return 0;
     }
-    
-    if (sqlite3_step(stmt) != SQLITE_OK) {
-        printf("Error: %s\n", sqlite3_errmsg(database));
-        return 0;
-    }
 
-    sqlite3_finalize(stmt);
+    sqlite3_step(stmt);
+    
     return 1;
 }
