@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "database.h"
 
-#define MAX 4000
+#define MAX 4096
 #define PORT 8080
 #define LISTENMAX 5 
 #define SA struct sockaddr

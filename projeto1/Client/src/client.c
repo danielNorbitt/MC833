@@ -16,11 +16,11 @@ int main(){
             printf("\nComando: ");
             char command = getchar();
 
-            //Clear input buffer to prevent overflow
+            //Clear input
             int c;
             while ((c = getchar()) != '\n' && c != EOF); 
 
-            // Get the parameter to each command
+            // Get the parameter
             char parameter[MAX_PROFILE_INFO] = {'\0'};
             switch (command){
                 case '1':
