@@ -33,19 +33,20 @@ sqlite3 *init_database(char *database_name){
     return database;
 }
 
-int add_profile(sqlite3 *database, char *email, char *name, char *city, char *course, char *year, char *skills) {
-    char *sql = "INSERT INTO Profile (email, name, city, course, year, skills) VALUES (?, ?, ?, ?, ?, ?);";
+int add_profile(sqlite3 *database, Profile profile) {
+    char *sql = "INSERT INTO Profile (email, first_name,last_name, city, course, year, skills) VALUES (?, ?, ?, ?, ?, ?, ?);";
 
     sqlite3_stmt *stmt;
 
     int rc = sqlite3_prepare_v2(database, sql, -1, &stmt, NULL);
 
-    rc = sqlite3_bind_text(stmt, 1, email, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 2, name, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 3, city, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 4, course, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 5, year, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 6, skills, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 1, profile.email, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 2, profile.first_name, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 2, profile.last_name, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 3, profile.city, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 4, profile.course, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 5, profile.year, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 6, profile.skills, -1, NULL);
 
     if (rc != SQLITE_OK) {
         printf("Error: %s\n", sqlite3_errmsg(database));
@@ -75,11 +76,8 @@ ListProfile *get_all(sqlite3 *database){
         printf("Error: %s\n", sqlite3_errmsg(database));
         return NULL;
     }
-    
-    printf("Entrei na funcao\n");
 
     for (int i = 0; (sqlite3_step(stmt) == SQLITE_ROW && i < MAX_PROFILES); i++) {
-        printf("Entrei no for \n");
         strcpy(profiles->list[i].email,       (char*)sqlite3_column_text(stmt,0));
         strcpy(profiles->list[i].first_name,  (char*)sqlite3_column_text(stmt,1));
         strcpy(profiles->list[i].last_name,   (char*)sqlite3_column_text(stmt,2));

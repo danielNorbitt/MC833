@@ -12,12 +12,10 @@
 
 #define BUFFER_LEN (MAX_PROFILE_INFO * 6) + MAX_SKILLS
 
-void take_argument(char*);
+void get_parameter(char*);
 
-void show_menu();
+void send_request(char cmd, char* arg, char* ip, int port);
 
-int connect_server();
+void receive_message(int socket);
 
-int send_request(char cmd, char* arg, char* ip, int port);
-
-void add_user();
+void get_profile_info(char* args);

@@ -25,7 +25,7 @@ typedef struct ListProfile {
 
 sqlite3 *init_database(char *database_name);
 
-int add_profile(sqlite3 *database, char *email, char *name, char *city, char *course, char *year, char *skills);
+int add_profile(sqlite3 *database, Profile profile);
 ListProfile *find_by_skill(sqlite3 *database, char *skill);
 ListProfile *find_by_course(sqlite3 *database, char *course);
 ListProfile *find_by_year(sqlite3 *database, char *year);

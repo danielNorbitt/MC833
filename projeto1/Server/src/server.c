@@ -20,8 +20,8 @@ void send_response(int connfd, ListProfile *profile_list) {
 	char temp[MAX];
 
 	if (profile_list->count == 0 || profile_list == NULL){
-		sprintf(temp, "No profile found\n%c",0x04);
-		send(connfd,temp,18,0);
+		sprintf(temp, "No profile found.\n%c",0x04);
+		send(connfd,temp,19,0);
 		return;
 	}
 
@@ -64,6 +64,27 @@ void send_response(int connfd, ListProfile *profile_list) {
 	free(profile_list);
 }
 
+Profile get_profile_info(char *profile_info) {
+	Profile profile;
+	printf("%s\n",profile_info);
+	char *ptr = strtok(profile_info, "\n");
+	printf("aki%s\n",ptr);
+	strcpy(profile.email,ptr);
+	ptr = strtok(profile_info, "\n");
+	strcpy(profile.first_name,ptr);
+	ptr = strtok(profile_info, "\n");
+	strcpy(profile.last_name,ptr);
+	ptr = strtok(profile_info, "\n");
+	strcpy(profile.city,ptr);
+	ptr = strtok(profile_info, "\n");
+	strcpy(profile.course,ptr);
+	ptr = strtok(profile_info, "\n");
+	strcpy(profile.year,ptr);
+	ptr = strtok(profile_info, "\n");
+	strcpy(profile.skills,ptr);
+	return profile;
+}
+
 // Interpret the client command and return to response to client
 void router(int connfd, sqlite3* database) { 
 
@@ -79,10 +100,23 @@ void router(int connfd, sqlite3* database) {
 	printf("Command from client : %c\n", buffer[0]); 
 
 	char parameter[MAX_PROFILE_INFO];
+	char profile_info[MAX];
+	char temp[MAX];
+	Profile profile;
 
 	switch (buffer[0]){
 	case '1':
-		printf("oi %c\n", buffer[0]);
+		memcpy(&profile_info, &buffer[1], MAX);
+		profile_info[MAX_PROFILE_INFO-1] = '\0';
+		profile = get_profile_info(profile_info);
+		if (add_profile(database,profile)){
+			sprintf(temp, "Profile removed sucessuly.\n%c",0x04);
+			send(connfd,temp,sizeof(temp),0);
+		}
+		else {
+			sprintf(temp, "Profile removed sucessuly.\n%c",0x04);
+			send(connfd,temp,sizeof(temp),0);
+		}
 		break;
 	case '2':
 		memcpy(&parameter, &buffer[1], MAX_PROFILE_INFO);
@@ -110,10 +144,14 @@ void router(int connfd, sqlite3* database) {
 	case '7':
 		memcpy(&parameter, &buffer[1], MAX_PROFILE_INFO);
 		parameter[MAX_PROFILE_INFO-1] = '\0';
-		if (remove_by_email(database, parameter))
-			send(connfd,"Profile removed sucessuly",27,0);
-		else 
-			send(connfd,"Can't remove the profile",26,0);
+		if (remove_by_email(database, parameter)){
+			sprintf(temp, "Profile removed sucessuly.\n%c",0x04);
+			send(connfd,temp,sizeof(temp),0);
+		}
+		else {
+			sprintf(temp, "Can't remove the profile.\n%c",0x04);
+			send(connfd,temp,sizeof(temp),0);
+		}
 		break;
 	default:
 		printf("Command not found\n");
@@ -123,15 +161,7 @@ void router(int connfd, sqlite3* database) {
 
 int main() { 
 	
-	sqlite3 *database = init_database("src/database.db");
-
-	ListProfile *prof = get_all(database);
-
-	for (int i = 0; i < prof->count; i++){
-		printf("Entrei aki\n");
-		printf("%s\n",prof->list[i].email);
-	}
-	
+	sqlite3 *database = init_database("src/database.db");	
 	
     int sockedfd, connfd, len_cli; 
 	struct sockaddr_in servaddr, cli; 
