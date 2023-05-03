@@ -42,11 +42,11 @@ int add_profile(sqlite3 *database, Profile profile) {
 
     rc = sqlite3_bind_text(stmt, 1, profile.email, -1, NULL);
     rc = sqlite3_bind_text(stmt, 2, profile.first_name, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 2, profile.last_name, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 3, profile.city, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 4, profile.course, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 5, profile.year, -1, NULL);
-    rc = sqlite3_bind_text(stmt, 6, profile.skills, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 3, profile.last_name, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 4, profile.city, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 5, profile.course, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 6, profile.year, -1, NULL);
+    rc = sqlite3_bind_text(stmt, 7, profile.skills, -1, NULL);
 
     if (rc != SQLITE_OK) {
         printf("Error: %s\n", sqlite3_errmsg(database));
