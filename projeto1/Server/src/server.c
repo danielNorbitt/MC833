@@ -53,21 +53,26 @@ void send_response(int connfd, ListProfile *profile_list) {
 // Parse the client message of add profile
 Profile get_profile_info(char *profile_info) {
 	Profile profile;
-	printf("%s\n",profile_info);
 	char *ptr = strtok(profile_info, "\n");
-	printf("aki%s\n",ptr);
+	printf("%s\n", ptr);
 	strcpy(profile.email,ptr);
-	ptr = strtok(profile_info, "\n");
+	ptr = strtok(NULL, "\n");
+	printf("%s\n", ptr);
 	strcpy(profile.first_name,ptr);
-	ptr = strtok(profile_info, "\n");
+	ptr = strtok(NULL, "\n");
+	printf("%s\n", ptr);
 	strcpy(profile.last_name,ptr);
-	ptr = strtok(profile_info, "\n");
+	ptr = strtok(NULL, "\n");
+	printf("%s\n", ptr);
 	strcpy(profile.city,ptr);
-	ptr = strtok(profile_info, "\n");
+	ptr = strtok(NULL, "\n");
+	printf("%s\n", ptr);
 	strcpy(profile.course,ptr);
-	ptr = strtok(profile_info, "\n");
+	ptr = strtok(NULL, "\n");
+	printf("%s\n", ptr);
 	strcpy(profile.year,ptr);
-	ptr = strtok(profile_info, "\n");
+	ptr = strtok(NULL, "\n");
+	printf("%s\n", ptr);
 	strcpy(profile.skills,ptr);
 	return profile;
 }
@@ -96,6 +101,14 @@ void router(int connfd, sqlite3* database) {
 		memcpy(&profile_info, &buffer[1], MAX);
 		profile_info[MAX_PROFILE_INFO-1] = '\0';
 		profile = get_profile_info(profile_info);
+		printf("%s\n",profile.email);
+		printf("%s\n",profile.first_name);
+		printf("%s\n",profile.last_name);
+		printf("%s\n",profile.city);
+		printf("%s\n",profile.course);
+		printf("%s\n",profile.year);
+		printf("%s\n",profile.skills);
+
 		if (add_profile(database,profile)){
 			sprintf(temp, "Profile removed sucessuly.\n%c",0x04);
 			send(connfd,temp,sizeof(temp),0);
